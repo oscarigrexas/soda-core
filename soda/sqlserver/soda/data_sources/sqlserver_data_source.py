@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from textwrap import dedent
 
 import pyodbc
+
 from soda.common.exceptions import DataSourceConnectionError
 from soda.common.logs import Logs
 from soda.execution.data_source import DataSource
@@ -62,7 +63,7 @@ class SQLServerDataSource(DataSource):
         super().__init__(logs, data_source_name, data_source_properties)
 
         self.host = data_source_properties.get("host", "localhost")
-        self.port = data_source_properties.get("port", "1433")
+        self.port = data_source_properties.get("port")
         self.driver = data_source_properties.get("driver", "ODBC Driver 18 for SQL Server")
         self.username = data_source_properties.get("username")
         self.password = data_source_properties.get("password")
@@ -133,8 +134,7 @@ class SQLServerDataSource(DataSource):
                 + self.driver
                 + "};SERVER="
                 + self.host
-                + ","
-                + str(self.port)
+                + ("," + str(self.port) if self.port else "")
                 + ";DATABASE="
                 + self.database
                 + ";UID="
